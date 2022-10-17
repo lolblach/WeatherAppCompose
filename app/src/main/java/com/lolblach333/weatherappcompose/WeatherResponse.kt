@@ -20,5 +20,13 @@ data class Location(
 data class Current(
     @SerializedName("last_updated_epoch")
     val last_updated_epoch: String?,
-    // TODO Add more fields
+    @SerializedName("temp_c")
+    val temp_c: String?,
+    @SerializedName("condition")
+    val condition :Condition
+)
+
+data class Condition(
+    @SerializedName("text")
+    val text :String?
 )
