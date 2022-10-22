@@ -7,21 +7,24 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
-import com.lolblach333.weatherappcompose.ui.theme.WeatherAppComposeTheme
-import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.CoroutineScope
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import com.lolblach333.weatherappcompose.model.ApiServiceHour
 import com.lolblach333.weatherappcompose.model.WeatherResponseHistory
-import com.lolblach333.weatherappcompose.screens.*
+import com.lolblach333.weatherappcompose.screens.Calendar
+import com.lolblach333.weatherappcompose.screens.ListItems
+import com.lolblach333.weatherappcompose.screens.MainScreen
+import com.lolblach333.weatherappcompose.screens.TabLayout
+import com.lolblach333.weatherappcompose.screens.TextField
+import com.lolblach333.weatherappcompose.ui.theme.WeatherAppComposeTheme
+import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -51,6 +54,8 @@ class MainActivity : ComponentActivity() {
                     var weatherResult by remember { mutableStateOf<WeatherResponse?>(null) }
                     var cityResult by remember { mutableStateOf("London") }
                     var dateResult by remember { mutableStateOf("2022-10-10") }
+                    val scope = rememberCoroutineScope()
+
                     MainScreen(
                         cityResult,
                         weatherResult?.current?.temp_c ?: "0'C",
@@ -59,11 +64,11 @@ class MainActivity : ComponentActivity() {
                     TextField { cityResult = it }
                     Calendar { dateResult = it }
                     TabLayout()
-                    ListItems(
-                        weatherHourResult?.forecast?.forecastday ?: listOf()
 
-                    )
-                    val scope = rememberCoroutineScope()
+                    weatherHourResult?.forecast?.forecastday?.takeIf { it.isNotEmpty() }?.let {
+                        ListItems(it)
+                    }
+
                     getResult(cityResult, scope) {
                         weatherResult = it
                     }

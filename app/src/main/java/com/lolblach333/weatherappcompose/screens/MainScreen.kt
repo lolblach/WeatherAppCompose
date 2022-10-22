@@ -1,35 +1,33 @@
 package com.lolblach333.weatherappcompose.screens
 
-import android.webkit.WebSettings
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.lolblach333.weatherappcompose.R
 import com.lolblach333.weatherappcompose.model.Forecastday
 import com.lolblach333.weatherappcompose.ui.theme.BlueLight
-
-
 
 @Composable
 fun MainScreen(city: String, temp: String, weather: String) {
@@ -83,7 +81,7 @@ fun MainScreen(city: String, temp: String, weather: String) {
 }
 
 @Composable
-fun TabLayout(){
+fun TabLayout() {
     val tabList = listOf("HOURS", "DAYS")
     Column(
         modifier = Modifier
@@ -92,11 +90,11 @@ fun TabLayout(){
                 RoundedCornerShape(5.dp)
             )
     ) {
-       TabRow(
-           selectedTabIndex = 0,
-           indicator = {},
-           backgroundColor = BlueLight
-       ) {
+        TabRow(
+            selectedTabIndex = 0,
+            indicator = {},
+            backgroundColor = BlueLight
+        ) {
             tabList.forEachIndexed { index, text ->
                 Tab(
                     selected = false,
@@ -117,12 +115,12 @@ fun TabLayout(){
                     }
                 )
             }
-       }
+        }
     }
 }
 
 @Composable
-fun TextField(onTextSelected : (String) -> Unit) {
+fun TextField(onTextSelected: (String) -> Unit) {
     val textState = remember { mutableStateOf(TextFieldValue()) }
     Column(
         Modifier.fillMaxWidth(),
@@ -130,7 +128,7 @@ fun TextField(onTextSelected : (String) -> Unit) {
     ) {
         TextField(
             value = textState.value,
-            onValueChange = {textState.value = it},
+            onValueChange = { textState.value = it },
             Modifier.fillMaxWidth(0.7f)
         )
         Button(
@@ -144,7 +142,7 @@ fun TextField(onTextSelected : (String) -> Unit) {
 }
 
 @Composable
-fun Calendar(onDateSelected : (String) -> Unit){
+fun Calendar(onDateSelected: (String) -> Unit) {
     val dateState = remember { mutableStateOf(TextFieldValue()) }
     Column(
         Modifier.fillMaxWidth(),
@@ -152,7 +150,7 @@ fun Calendar(onDateSelected : (String) -> Unit){
     ) {
         TextField(
             value = dateState.value,
-            onValueChange = {dateState.value = it},
+            onValueChange = { dateState.value = it },
             Modifier.fillMaxWidth(0.7f)
         )
         Button(
@@ -203,10 +201,18 @@ fun ListItem(currentHour: String, weatherState: String, temp: String) {
 }
 
 @Composable
-fun ListItems(list: List<Forecastday>){
-    LazyColumn(){
-        items(list){
-            ListItem(currentHour, weatherState, temp)
+fun ListItems(list: List<Forecastday>) {
+    LazyColumn {
+        list[0].hour?.forEach {
+            val time = it.time
+            val weatherState = it.condition?.text
+            val temp = it.temp_c
+
+            if (time != null && weatherState != null && temp != null) {
+                item {
+                    ListItem(time, weatherState, temp)
+                }
+            }
         }
     }
 }
