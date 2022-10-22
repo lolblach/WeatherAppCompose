@@ -23,6 +23,7 @@ import com.lolblach333.weatherappcompose.screens.MainScreen
 import com.lolblach333.weatherappcompose.screens.TabLayout
 import com.lolblach333.weatherappcompose.screens.TextField
 import com.lolblach333.weatherappcompose.ui.theme.WeatherAppComposeTheme
+import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -72,7 +73,7 @@ class MainActivity : ComponentActivity() {
                     getResult(cityResult, scope) {
                         weatherResult = it
                     }
-                    getHourResult(cityResult, scope, dateResult) {
+                    getHourResult(cityResult, scope) {
                         weatherHourResult = it
                     }
 
@@ -93,11 +94,16 @@ private fun getResult(city: String, scope: CoroutineScope, result: (WeatherRespo
 private fun getHourResult(
     city: String,
     scope: CoroutineScope,
-    date: String,
     resultHour: (WeatherResponseHistory) -> Unit
 ) {
     scope.launch {
-        val response = apiService.getHourWeather(API_KEY, city, date).body()
+        val date = LocalDate.now()
+
+        val response = apiService.getHourWeather(
+            API_KEY,
+            city,
+            "${date.year}-${date.monthValue}-${date.dayOfMonth}"
+        ).body()
         response?.let(resultHour)
     }
 }
